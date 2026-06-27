@@ -1,24 +1,28 @@
 <?php
 
+namespace EWallet\Repository;
+
 function ajouterWallet(array $wallet): void {
     global $wallets;
-    $wallets[] = $wallet;
+    array_push($wallets, $wallet);
 }
 
 function trouverIndexParTelephone(string $telephone): int {
     global $wallets;
-    for ($i = 0; $i < count($wallets); $i++) {
-        if ($wallets[$i]['telephone'] === $telephone) {
-            return $i;
-        }
+    $index = array_search(
+        $telephone,
+        array_column($wallets, 'telephone')
+    );
+    if ($index === false) {
+        return -7;
     }
-    return -7;
+    return $index;
 }
 
 function trouverWalletParTelephone(string $telephone): array {
     global $wallets;
-    $index = trouverIndexParTelephone($telephone);
-    return $wallets[$index];
+    $trouve = array_filter($wallets, fn($w) => $w['telephone'] === $telephone);
+    return array_values($trouve)[0];
 }
 
 function mettreAJourSolde(string $telephone, int $nouveauSolde): void {
@@ -29,7 +33,7 @@ function mettreAJourSolde(string $telephone, int $nouveauSolde): void {
 
 function ajouterTransaction(array $transaction): void {
     global $transactions;
-    $transactions[] = $transaction;
+    array_push($transactions, $transaction);
 }
 
 function obtenirTransactions(): array {
@@ -40,13 +44,9 @@ function obtenirTransactions(): array {
 function obtenirTransactionsParTelephone(string $telephone): array {
     global $transactions;
     $index = trouverIndexParTelephone($telephone);
-    $resultat = [];
-    for ($i = 0; $i < count($transactions); $i++) {
-        if ($transactions[$i]['indexClient'] === $index) {
-            $resultat[] = $transactions[$i];
-        }
-    }
-    return $resultat;
+    return array_values(
+        array_filter($transactions, fn($t) => $t['indexClient'] === $index)
+    );
 }
 
 function obtenirTelephoneParIndex(int $index): string {
