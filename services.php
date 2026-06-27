@@ -97,22 +97,17 @@ function faireRetrait(string $telephone, int $montant): int {
 
 function listerTransactions(): array {
     $transactions = obtenirTransactions();
-    $resultat = [];
-    for ($i = 0; $i < count($transactions); $i++) {
-        $telephone = obtenirTelephoneParIndex($transactions[$i]['indexClient']);
+    return array_map(function($t) {
+        $telephone = obtenirTelephoneParIndex($t['indexClient']);
         $wallet = trouverWalletParTelephone($telephone);
-        $type = 'Dépôt';
-        if ($transactions[$i]['montant'] < 0) {
-            $type = 'Retrait';
-        }
-        $resultat[] = [
+        $type = $t['montant'] > 0 ? 'Dépôt' : 'Retrait';
+        return [
             'type'    => $type,
-            'montant' => $transactions[$i]['montant'],
-            'frais'   => $transactions[$i]['frais'],
+            'montant' => $t['montant'],
+            'frais'   => $t['frais'],
             'client'  => $wallet['client']
         ];
-    }
-    return $resultat;
+    }, $transactions);
 }
 
 function listerTransactionsParTelephone(string $telephone): array {
@@ -122,18 +117,13 @@ function listerTransactionsParTelephone(string $telephone): array {
     }
     $transactions = obtenirTransactionsParTelephone($telephone);
     $wallet = trouverWalletParTelephone($telephone);
-    $resultat = [];
-    for ($i = 0; $i < count($transactions); $i++) {
-        $type = 'Dépôt';
-        if ($transactions[$i]['montant'] < 0) {
-            $type = 'Retrait';
-        }
-        $resultat[] = [
+    return array_map(function($t) use ($wallet) {
+        $type = $t['montant'] > 0 ? 'Dépôt' : 'Retrait';
+        return [
             'type'    => $type,
-            'montant' => $transactions[$i]['montant'],
-            'frais'   => $transactions[$i]['frais'],
+            'montant' => $t['montant'],
+            'frais'   => $t['frais'],
             'client'  => $wallet['client']
         ];
-    }
-    return $resultat;
+    }, $transactions);
 }
