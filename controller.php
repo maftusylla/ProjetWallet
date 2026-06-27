@@ -32,13 +32,14 @@ function afficherTransactions(array $transactions): void {
         echo "Aucune transaction trouvée\n";
         return;
     }
-    for ($i = 0; $i < count($transactions); $i++) {
+    foreach ($transactions as $transaction){
         echo "----------------------------\n";
         echo "Type      : " . $transactions[$i]['type'] . "\n";
         echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
         echo "Titulaire : " . $transactions[$i]['client'] . "\n";
         echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
     }
+   
 }
 
 function controllerCreerWallet(): void {
@@ -77,7 +78,7 @@ function controllerFaireRetrait(): void {
 }
 
 function controllerListerTransactions(): void {
-    $choix = readline("1 - Toutes les transactions\n2 - Par téléphone\nVotre choix : ");
+    $choix = readline("1 - Toutes les transactions\n 2 - Par téléphone\nVotre choix : ");
     if ($choix === '1') {
         $transactions = listerTransactions();
         afficherTransactions($transactions);
