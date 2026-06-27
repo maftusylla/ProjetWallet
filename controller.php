@@ -12,12 +12,25 @@ function message(int $code): string {
         -8 => "Votre solde est insuffisant ",
         -9 => "Le nom du client est  obligatoire "
     ];
-    for ($i = -1; $i >= -9; $i--) {
-        if ($i === $code) {
-            return $messages[$i];
-        }
-    }
+    if (isset($messages[$code])) {
+    return $messages[$code];
+}
     return "Erreur inconnue";
+}
+
+function afficherTransactions(array $transactions): void {
+    if (count($transactions) === 0) {
+        echo "Aucune transaction trouvée\n";
+        return;
+    }
+    foreach ($transactions as $transaction){
+        echo "----------------------------\n";
+        echo "Type      : " . $transactions[$i]['type'] . "\n";
+        echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
+        echo "Titulaire : " . $transactions[$i]['client'] . "\n";
+        echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
+    }
+   
 }
 
 function controllerCreerWallet(): void {
@@ -78,16 +91,3 @@ function controllerListerTransactions(): void {
     echo "Votre choix est invalide\n";
 }
 
-function afficherTransactions(array $transactions): void {
-    if (count($transactions) === 0) {
-        echo "Aucune transaction trouvée \n";
-        return;
-    }
-    for ($i = 0; $i < count($transactions); $i++) {
-        echo "----------------------------\n";
-        echo "Type      : " . $transactions[$i]['type'] . "\n";
-        echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
-        echo "Titulaire : " . $transactions[$i]['client'] . "\n";
-        echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
-    }
-}
