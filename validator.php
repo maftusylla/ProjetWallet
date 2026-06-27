@@ -1,5 +1,7 @@
 <?php
 
+namespace EWallet\Validator;
+
 function validerChampObligatoire(string $valeur): int {
     if ($valeur === '') {
         return -9;
@@ -8,14 +10,11 @@ function validerChampObligatoire(string $valeur): int {
 }
 
 function validerLongueur(string $valeur, int $longueur): int {
-    $compteur = 0;
-    for ($i = 0; $i < strlen($valeur); $i++) {
-        if ($valeur[$i] < '0' || $valeur[$i] > '9') {
-            return -1;
-        }
-        $compteur++;
+    $chiffres = array_filter(str_split($valeur), fn($c) => $c >= '0' && $c <= '9');
+    if (count($chiffres) !== strlen($valeur)) {
+        return -1;
     }
-    if ($compteur !== $longueur) {
+    if (strlen($valeur) !== $longueur) {
         return -1;
     }
     return 2;
@@ -23,24 +22,23 @@ function validerLongueur(string $valeur, int $longueur): int {
 
 function validerPrefixe(string $telephone): int {
     $prefixesValides = ['70', '75', '76', '77', '78'];
-    $prefixe = $telephone[0] . $telephone[1];
-    for ($i = 0; $i < 5; $i++) {
-        if ($prefixesValides[$i] === $prefixe) {
-            return 2;
-        }
+    $prefixe = substr($telephone, 0, 2);
+    $trouve = array_filter($prefixesValides, fn($p) => $p === $prefixe);
+    if (count($trouve) === 0) {
+        return -2;
     }
-    return -2;
+    return 2;
 }
 
 function validerUnicite(string $telephone, int $code): int {
     global $wallets;
-    for ($i = 0; $i < count($wallets); $i++) {
-        if ($wallets[$i]['telephone'] === $telephone) {
-            return -3;
-        }
-        if ($wallets[$i]['code'] === $code) {
-            return -4;
-        }
+    $telExiste = array_filter($wallets, fn($w) => $w['telephone'] === $telephone);
+    if (count($telExiste) > 0) {
+        return -3;
+    }
+    $codeExiste = array_filter($wallets, fn($w) => $w['code'] === $code);
+    if (count($codeExiste) > 0) {
+        return -4;
     }
     return 2;
 }
@@ -61,24 +59,23 @@ function validerMontant(int $montant): int {
 
 function validerExistenceTelephone(string $telephone): int {
     global $wallets;
-    for ($i = 0; $i < count($wallets); $i++) {
-        if ($wallets[$i]['telephone'] === $telephone) {
-            return 2;
-        }
+    $trouve = array_filter($wallets, fn($w) => $w['telephone'] === $telephone);
+    if (count($trouve) === 0) {
+        return -7;
     }
-    return -7;
+    return 2;
 }
 
 function validerSoldeSuffisant(string $telephone, int $montant): int {
     global $wallets;
-    for ($i = 0; $i < count($wallets); $i++) {
-        if ($wallets[$i]['telephone'] === $telephone) {
-            $frais = calculerFrais($montant);
-            if ($wallets[$i]['solde'] < $montant + $frais) {
-                return -8;
-            }
-            return 2;
-        }
+    $trouve = array_filter($wallets, fn($w) => $w['telephone'] === $telephone);
+    if (count($trouve) === 0) {
+        return -7;
     }
-    return -7;
+    $wallet = array_values($trouve)[0];
+    $frais = \EWallet\Services\calculerFrais($montant);
+    if ($wallet['solde'] < $montant + $frais) {
+        return -8;
+    }
+    return 2;
 }
