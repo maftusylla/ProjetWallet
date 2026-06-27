@@ -1,5 +1,7 @@
 <?php
 
+namespace EWallet\Validator;
+
 function validerChampObligatoire(string $valeur): int {
     if ($valeur === '') {
         return -9;
@@ -71,7 +73,7 @@ function validerSoldeSuffisant(string $telephone, int $montant): int {
         return -7;
     }
     $wallet = array_values($trouve)[0];
-    $frais = calculerFrais($montant);
+    $frais = \EWallet\Services\calculerFrais($montant);
     if ($wallet['solde'] < $montant + $frais) {
         return -8;
     }

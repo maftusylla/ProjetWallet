@@ -5,6 +5,11 @@ require 'repository.php';
 require 'services.php';
 require 'controller.php';
 
+use function EWallet\Controller\controllerCreerWallet;
+use function EWallet\Controller\controllerFaireDepot;
+use function EWallet\Controller\controllerFaireRetrait;
+use function EWallet\Controller\controllerListerTransactions;
+
 $wallets = [
     0 => ['client' => 'Baila Wane', 'telephone' => '778939021', 'code' => 1234, 'solde' => 0],
     1 => ['client' => 'Mame Fatou', 'telephone' => '783245609', 'code' => 5678, 'solde' => 30000]

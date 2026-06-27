@@ -1,5 +1,24 @@
 <?php
 
+namespace EWallet\Services;
+
+use function EWallet\Validator\validerChampObligatoire;
+use function EWallet\Validator\validerLongueur;
+use function EWallet\Validator\validerPrefixe;
+use function EWallet\Validator\validerUnicite;
+use function EWallet\Validator\validerSoldeInitial;
+use function EWallet\Validator\validerMontant;
+use function EWallet\Validator\validerExistenceTelephone;
+use function EWallet\Validator\validerSoldeSuffisant;
+use function EWallet\Repository\ajouterWallet;
+use function EWallet\Repository\trouverIndexParTelephone;
+use function EWallet\Repository\trouverWalletParTelephone;
+use function EWallet\Repository\mettreAJourSolde;
+use function EWallet\Repository\ajouterTransaction;
+use function EWallet\Repository\obtenirTransactions;
+use function EWallet\Repository\obtenirTransactionsParTelephone;
+use function EWallet\Repository\obtenirTelephoneParIndex;
+
 function calculerFrais(int $montant): int {
     if ($montant <= 10000) {
         return 200;

@@ -1,5 +1,7 @@
 <?php
 
+namespace EWallet\Repository;
+
 function ajouterWallet(array $wallet): void {
     global $wallets;
     array_push($wallets, $wallet);
