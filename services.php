@@ -1,5 +1,24 @@
 <?php
 
+namespace EWallet\Services;
+
+use function EWallet\Validator\validerChampObligatoire;
+use function EWallet\Validator\validerLongueur;
+use function EWallet\Validator\validerPrefixe;
+use function EWallet\Validator\validerUnicite;
+use function EWallet\Validator\validerSoldeInitial;
+use function EWallet\Validator\validerMontant;
+use function EWallet\Validator\validerExistenceTelephone;
+use function EWallet\Validator\validerSoldeSuffisant;
+use function EWallet\Repository\ajouterWallet;
+use function EWallet\Repository\trouverIndexParTelephone;
+use function EWallet\Repository\trouverWalletParTelephone;
+use function EWallet\Repository\mettreAJourSolde;
+use function EWallet\Repository\ajouterTransaction;
+use function EWallet\Repository\obtenirTransactions;
+use function EWallet\Repository\obtenirTransactionsParTelephone;
+use function EWallet\Repository\obtenirTelephoneParIndex;
+
 function calculerFrais(int $montant): int {
     if ($montant <= 10000) {
         return 200;
@@ -97,22 +116,17 @@ function faireRetrait(string $telephone, int $montant): int {
 
 function listerTransactions(): array {
     $transactions = obtenirTransactions();
-    $resultat = [];
-    for ($i = 0; $i < count($transactions); $i++) {
-        $telephone = obtenirTelephoneParIndex($transactions[$i]['indexClient']);
+    return array_map(function($t) {
+        $telephone = obtenirTelephoneParIndex($t['indexClient']);
         $wallet = trouverWalletParTelephone($telephone);
-        $type = 'Dépôt';
-        if ($transactions[$i]['montant'] < 0) {
-            $type = 'Retrait';
-        }
-        $resultat[] = [
+        $type = $t['montant'] > 0 ? 'Dépôt' : 'Retrait';
+        return [
             'type'    => $type,
-            'montant' => $transactions[$i]['montant'],
-            'frais'   => $transactions[$i]['frais'],
+            'montant' => $t['montant'],
+            'frais'   => $t['frais'],
             'client'  => $wallet['client']
         ];
-    }
-    return $resultat;
+    }, $transactions);
 }
 
 function listerTransactionsParTelephone(string $telephone): array {
@@ -122,18 +136,13 @@ function listerTransactionsParTelephone(string $telephone): array {
     }
     $transactions = obtenirTransactionsParTelephone($telephone);
     $wallet = trouverWalletParTelephone($telephone);
-    $resultat = [];
-    for ($i = 0; $i < count($transactions); $i++) {
-        $type = 'Dépôt';
-        if ($transactions[$i]['montant'] < 0) {
-            $type = 'Retrait';
-        }
-        $resultat[] = [
+    return array_map(function($t) use ($wallet) {
+        $type = $t['montant'] > 0 ? 'Dépôt' : 'Retrait';
+        return [
             'type'    => $type,
-            'montant' => $transactions[$i]['montant'],
-            'frais'   => $transactions[$i]['frais'],
+            'montant' => $t['montant'],
+            'frais'   => $t['frais'],
             'client'  => $wallet['client']
         ];
-    }
-    return $resultat;
+    }, $transactions);
 }
