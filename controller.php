@@ -10,35 +10,34 @@ use function EWallet\Services\listerTransactionsParTelephone;
 
 function message(int $code): string {
     $messages = [
-        -1 => "Longueur invalide",
-        -2 => "Préfixe invalide",
-        -3 => "Téléphone déjà utilisé",
-        -4 => "Code déjà utilisé",
-        -5 => "Solde invalide",
-        -6 => "Montant invalide",
-        -7 => "Téléphone inexistant",
-        -8 => "Solde insuffisant",
-        -9 => "Nom du client obligatoire"
+        -1 => "La longueur du numéro ou du code est invalide ",
+        -2 => "Préfixe du numéro est invalide ",
+        -3 => "Ce numéro de télèphone existe dèjà ",
+        -4 => "Ce code existe dèjà ",
+        -5 => "Veuillez entrez un solde valide ",
+        -6 => "Veuillez entrez un montant valide ",
+        -7 => "Ce numéro de télèphone n'existe pas ",
+        -8 => "Votre solde est insuffisant ",
+        -9 => "Le nom du client est  obligatoire "
     ];
-    $trouve = array_filter($messages, fn($v, $k) => $k === $code, ARRAY_FILTER_USE_BOTH);
-    if (count($trouve) === 0) {
-        return "Erreur inconnue";
-    }
-    return array_values($trouve)[0];
+    if (isset($messages[$code])) {
+    return $messages[$code];
 }
-
+    return "Erreur inconnue";
+}
 function afficherTransactions(array $transactions): void {
     if (count($transactions) === 0) {
         echo "Aucune transaction trouvée\n";
         return;
     }
-    for ($i = 0; $i < count($transactions); $i++) {
+    foreach ($transactions as $transaction){
         echo "----------------------------\n";
         echo "Type      : " . $transactions[$i]['type'] . "\n";
         echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
         echo "Titulaire : " . $transactions[$i]['client'] . "\n";
         echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
     }
+   
 }
 
 function controllerCreerWallet(): void {
@@ -77,7 +76,7 @@ function controllerFaireRetrait(): void {
 }
 
 function controllerListerTransactions(): void {
-    $choix = readline("1 - Toutes les transactions\n2 - Par téléphone\nVotre choix : ");
+    $choix = readline("1 - Toutes les transactions\n 2 - Par téléphone\nVotre choix : ");
     if ($choix === '1') {
         $transactions = listerTransactions();
         afficherTransactions($transactions);
