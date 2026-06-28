@@ -23,7 +23,7 @@ $direBonjour \= function(string $nom): string {
     return "Bonjour " . $nom;
 
 };
-
+\=
 echo $direBonjour("Mame");
 
 // Résultat : Bonjour Mame

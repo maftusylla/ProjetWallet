@@ -42,6 +42,22 @@ function afficherTransactions(array $transactions): void {
 
 function controllerCreerWallet(): void { 
 
+function afficherTransactions(array $transactions): void {
+    if (count($transactions) === 0) {
+        echo "Aucune transaction trouvée\n";
+        return;
+    }
+    foreach ($transactions as $transaction){
+        echo "----------------------------\n";
+        echo "Type      : " . $transactions[$i]['type'] . "\n";
+        echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
+        echo "Titulaire : " . $transactions[$i]['client'] . "\n";
+        echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
+    }
+   
+}
+
+function controllerCreerWallet(): void {
     $client    = readline("Veuillez entrez le nom du client : ");
     $telephone = readline("Veuillez entrez un numéro de téléphone : ");
     $code      = (int) readline("Veuillez saisir votre code secret (4 chiffres) : ");
@@ -91,5 +107,6 @@ function controllerListerTransactions(): void {
         afficherTransactions($transactions);
         return;
     }
-    echo "Choix invalide\n";
+    echo "Votre choix est invalide\n";
 }
+
