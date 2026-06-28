@@ -60,3 +60,34 @@ function controllerFaireRetrait(): void {
     }
     echo "Votre retrait est  effectué avec succès !\n";
 }
+
+function controllerListerTransactions(): void {
+    $choix = readline("1 - Toutes les transactions\n2 - Par téléphone\nVotre choix : ");
+
+    if ($choix === '1') {
+        $transactions = listerTransactions();
+        afficherTransactions($transactions);
+        return;
+    }
+    if ($choix === '2') {
+        $telephone    = readline("Veuillez entrez un numéro de téléphone : ");
+        $transactions = listerTransactionsParTelephone($telephone);
+        afficherTransactions($transactions);
+        return;
+    }
+    echo "Votre choix est invalide\n";
+}
+
+function afficherTransactions(array $transactions): void {
+    if (count($transactions) === 0) {
+        echo "Aucune transaction trouvée \n";
+        return;
+    }
+    for ($i = 0; $i < count($transactions); $i++) {
+        echo "----------------------------\n";
+        echo "Type      : " . $transactions[$i]['type'] . "\n";
+        echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
+        echo "Titulaire : " . $transactions[$i]['client'] . "\n";
+        echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
+    }
+}

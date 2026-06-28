@@ -94,3 +94,45 @@ function faireRetrait(string $telephone, int $montant): int {
     ]);
     return 2;
 }
+function listerTransactions(): array {
+    $transactions = obtenirTransactions();
+    $resultat = [];
+    for ($i = 0; $i < count($transactions); $i++) {
+        $telephone = obtenirTelephoneParIndex($transactions[$i]['indexClient']);
+        $wallet = trouverWalletParTelephone($telephone);
+        $type = 'Dépôt';
+        if ($transactions[$i]['montant'] < 0) {
+            $type = 'Retrait';
+        }
+        $resultat[] = [
+            'type'    => $type,
+            'montant' => $transactions[$i]['montant'],
+            'frais'   => $transactions[$i]['frais'],
+            'client'  => $wallet['client']
+        ];
+    }
+    return $resultat;
+}
+
+function listerTransactionsParTelephone(string $telephone): array {
+    $existence = validerExistenceTelephone($telephone);
+    if ($existence < 2) {
+        return [];
+    }
+    $transactions = obtenirTransactionsParTelephone($telephone);
+    $wallet = trouverWalletParTelephone($telephone);
+    $resultat = [];
+    for ($i = 0; $i < count($transactions); $i++) {
+        $type = 'Dépôt';
+        if ($transactions[$i]['montant'] < 0) {
+            $type = 'Retrait';
+        }
+        $resultat[] = [
+            'type'    => $type,
+            'montant' => $transactions[$i]['montant'],
+            'frais'   => $transactions[$i]['frais'],
+            'client'  => $wallet['client']
+        ];
+    }
+    return $resultat;
+}
