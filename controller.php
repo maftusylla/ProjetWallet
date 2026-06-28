@@ -1,5 +1,13 @@
 <?php
 
+namespace EWallet\Controller;
+
+use function EWallet\Services\creerWallet;
+use function EWallet\Services\faireDepot;
+use function EWallet\Services\faireRetrait;
+use function EWallet\Services\listerTransactions;
+use function EWallet\Services\listerTransactionsParTelephone;
+
 function message(int $code): string {
     $messages = [
         -1 => "La longueur du numéro ou du code est invalide ",
@@ -17,6 +25,22 @@ function message(int $code): string {
 }
     return "Erreur inconnue";
 }
+function afficherTransactions(array $transactions): void {
+    if (count($transactions) === 0) {
+        echo "Aucune transaction trouvée\n";
+        return;
+    }
+    foreach ($transactions as $transaction){
+        echo "----------------------------\n";
+        echo "Type      : " . $transactions[$i]['type'] . "\n";
+        echo "Montant   : " . $transactions[$i]['montant'] . " CFA\n";
+        echo "Titulaire : " . $transactions[$i]['client'] . "\n";
+        echo "Frais     : " . $transactions[$i]['frais'] . " CFA\n";
+    }
+   
+}
+
+function controllerCreerWallet(): void { 
 
 function afficherTransactions(array $transactions): void {
     if (count($transactions) === 0) {
@@ -39,8 +63,8 @@ function controllerCreerWallet(): void {
     $code      = (int) readline("Veuillez saisir votre code secret (4 chiffres) : ");
     $solde     = (int) readline("Veuillez entrez votre solde initial : ");
 
-    $resultat = creerWallet($client, $telephone, $code, $solde);
-
+    
+    $resultat  = creerWallet($client, $telephone, $code, $solde);
     if ($resultat < 2) {
         echo "Erreur : " . message($resultat) . "\n";
         return;
@@ -49,34 +73,29 @@ function controllerCreerWallet(): void {
 }
 
 function controllerFaireDepot(): void {
-    $telephone = readline("Veuillez entrez un numéro de téléphone : ");
-    $montant   = (int) readline("Veuillez entrez un montant à déposer : ");
-
-    $resultat = faireDepot($telephone, $montant);
-
+    $telephone = readline("Numéro de téléphone : ");
+    $montant   = (int) readline("Montant à déposer : ");
+    $resultat  = faireDepot($telephone, $montant);
     if ($resultat < 2) {
         echo "Erreur : " . message($resultat) . "\n";
         return;
     }
-    echo " Votre dépôt est  effectué avec succès !\n";
+    echo "Dépôt effectué avec succès !\n";
 }
 
 function controllerFaireRetrait(): void {
-    $telephone = readline("Numéro de téléphone : ");
-    $montant   = (int) readline("Montant à retirer : ");
-
-    $resultat = faireRetrait($telephone, $montant);
-
+    $telephone = readline("Veuillez entrez un numéro de téléphone : ");
+    $montant   = (int) readline("Veuillez entrez un montant à retirer : ");
+    $resultat  = faireRetrait($telephone, $montant);
     if ($resultat < 2) {
         echo "Erreur : " . message($resultat) . "\n";
         return;
     }
-    echo "Votre retrait est  effectué avec succès !\n";
+    echo "Retrait effectué avec succès !\n";
 }
 
 function controllerListerTransactions(): void {
-    $choix = readline("1 - Toutes les transactions\n2 - Par téléphone\nVotre choix : ");
-
+    $choix = readline("1 - Toutes les transactions\n 2 - Par téléphone\nVotre choix : ");
     if ($choix === '1') {
         $transactions = listerTransactions();
         afficherTransactions($transactions);
