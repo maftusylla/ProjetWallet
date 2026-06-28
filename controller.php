@@ -40,11 +40,14 @@ function afficherTransactions(array $transactions): void {
    
 }
 
-function controllerCreerWallet(): void {
-    $client    = readline("Nom du client : ");
-    $telephone = readline("Numéro de téléphone : ");
-    $code      = (int) readline("Code secret (4 chiffres) : ");
-    $solde     = (int) readline("Solde initial : ");
+function controllerCreerWallet(): void { 
+
+    $client    = readline("Veuillez entrez le nom du client : ");
+    $telephone = readline("Veuillez entrez un numéro de téléphone : ");
+    $code      = (int) readline("Veuillez saisir votre code secret (4 chiffres) : ");
+    $solde     = (int) readline("Veuillez entrez votre solde initial : ");
+
+    
     $resultat  = creerWallet($client, $telephone, $code, $solde);
     if ($resultat < 2) {
         echo "Erreur : " . message($resultat) . "\n";
@@ -65,8 +68,8 @@ function controllerFaireDepot(): void {
 }
 
 function controllerFaireRetrait(): void {
-    $telephone = readline("Numéro de téléphone : ");
-    $montant   = (int) readline("Montant à retirer : ");
+    $telephone = readline("Veuillez entrez un numéro de téléphone : ");
+    $montant   = (int) readline("Veuillez entrez un montant à retirer : ");
     $resultat  = faireRetrait($telephone, $montant);
     if ($resultat < 2) {
         echo "Erreur : " . message($resultat) . "\n";
@@ -83,7 +86,7 @@ function controllerListerTransactions(): void {
         return;
     }
     if ($choix === '2') {
-        $telephone    = readline("Numéro de téléphone : ");
+        $telephone    = readline("Veuillez entrez un numéro de téléphone : ");
         $transactions = listerTransactionsParTelephone($telephone);
         afficherTransactions($transactions);
         return;
