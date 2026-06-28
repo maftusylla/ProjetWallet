@@ -69,3 +69,28 @@ function faireDepot(string $telephone, int $montant): int {
     return 2;
 }
 
+function faireRetrait(string $telephone, int $montant): int {
+    $existence = validerExistenceTelephone($telephone);
+    if ($existence < 2) {
+        return $existence;
+    }
+    $montantValide = validerMontant($montant);
+    if ($montantValide < 2) {
+        return $montantValide;
+    }
+    $solde = validerSoldeSuffisant($telephone, $montant);
+    if ($solde < 2) {
+        return $solde;
+    }
+    $frais = calculerFrais($montant);
+    $wallet = trouverWalletParTelephone($telephone);
+    $nouveauSolde = $wallet['solde'] - $montant - $frais;
+    mettreAJourSolde($telephone, $nouveauSolde);
+    $index = trouverIndexParTelephone($telephone);
+    ajouterTransaction([
+        'montant'     => -$montant,
+        'frais'       => $frais,
+        'indexClient' => $index
+    ]);
+    return 2;
+}
