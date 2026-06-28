@@ -69,16 +69,3 @@ function validerExistenceTelephone(string $telephone): int {
     return -7;
 }
 
-function validerSoldeSuffisant(string $telephone, int $montant): int {
-    global $wallets;
-    for ($i = 0; $i < count($wallets); $i++) {
-        if ($wallets[$i]['telephone'] === $telephone) {
-            $frais = calculerFrais($montant);
-            if ($wallets[$i]['solde'] < $montant + $frais) {
-                return -8;
-            }
-            return 2;
-        }
-    }
-    return -7;
-}
