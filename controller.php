@@ -48,3 +48,15 @@ function controllerFaireDepot(): void {
     echo " Votre dépôt est  effectué avec succès !\n";
 }
 
+function controllerFaireRetrait(): void {
+    $telephone = readline("Numéro de téléphone : ");
+    $montant   = (int) readline("Montant à retirer : ");
+
+    $resultat = faireRetrait($telephone, $montant);
+
+    if ($resultat < 2) {
+        echo "Erreur : " . message($resultat) . "\n";
+        return;
+    }
+    echo "Votre retrait est  effectué avec succès !\n";
+}
